@@ -102,14 +102,27 @@ rm(cleanfeatures)
 #  *** this merge takes too mauch memory for R session
 #tmp <- merge(features,train,by="Store",all=TRUE)
 
-train1 <- train[train$Store==1,]
-features1 <- features[features$Store==1,]
+dept <- sort(unique(train[,"Dept"]))
+strs <- sort(unique(store[,"Store"]))
 
-model1 <- merge(features1,train1,by="Store",all=TRUE)
+#create complete feature files for each store.
+for (i in strs) {
+  traini <- train[train$Store==i,]
+  featuresi <- features[features$Store==i,]
+  
+  modeli <- merge(featuresi,traini,by="Store",all=TRUE)
+  write.table(modeli, file=paste("./data/model",i,".csv", sep=""),col.names=T)
+  rm(traini)
+  rm(featuresi)
+  rm(modeli)
+}
+
+rm(i)
+
+#load and split each store by dept sales and save to deptsales files.
 
 
-
-# build model
+# build models for each dept.
 
 
 
