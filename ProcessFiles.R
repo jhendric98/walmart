@@ -9,7 +9,7 @@ setwd("~/Documents/kaggle/walmart")
 # import raw data
 features <- read.csv("./data/features.csv")
 sampleSubmission <- read.csv("./data/sampleSubmission.csv")
-store <- read.csv("./data/test.csv")
+store <- read.csv("./data/store.csv")
 train <- read.csv("./data/train.csv")
 test <- read.csv("./data/test.csv")
 
@@ -43,7 +43,7 @@ rm(y)
 
 # add holiday columns
 # Super Bowl: 12-Feb-10, 11-Feb-11, 10-Feb-12, 8-Feb-13
-x <- c("superbowl","2010-02-10")
+x <- c("superbowl","2010-02-12")
 x <- rbind(x,c("superbowl","2011-02-11"))
 x <- rbind(x,c("superbowl","2012-02-10"))
 x <- rbind(x,c("superbowl","2013-02-08"))
@@ -52,22 +52,36 @@ x <- rbind(x,c("superbowl","2013-02-08"))
 x <- rbind(x,c("laborday","2010-09-10"))
 x <- rbind(x,c("laborday","2011-09-09"))
 x <- rbind(x,c("laborday","2012-09-07"))
-x <- rbind(x,c("laborday","2013-09-06"))
+#x <- rbind(x,c("laborday","2013-09-06"))
 
 #  Thanksgiving: 26-Nov-10, 25-Nov-11, 23-Nov-12, 29-Nov-13
 x <- rbind(x,c("thanksgiving","2010-11-26"))
 x <- rbind(x,c("thanksgiving","2011-11-25"))
 x <- rbind(x,c("thanksgiving","2012-11-23"))
-x <- rbind(x,c("thanksgiving","2013-11-29"))
+#x <- rbind(x,c("thanksgiving","2013-11-29"))
 
 #  Christmas: 31-Dec-10, 30-Dec-11, 28-Dec-12, 27-Dec-13
 x <- rbind(x,c("christmas","2010-12-31"))
 x <- rbind(x,c("christmas","2011-12-30"))
 x <- rbind(x,c("christmas","2012-12-28"))
-x <- rbind(x,c("christmas","2013-12-27"))
+#x <- rbind(x,c("christmas","2013-12-27"))
 
 colnames(x) <- c("Holiday","Date")
+rownames(x) <- c(1:nrow(x))
+x <- as.data.frame(x)
 
+#merge features and x to add holiday column
+tmp <- merge(features, x, by = "Date", all=TRUE)
+
+levels(tmp$Holiday) <- c("christmas","laborday","superbowl","thanksgiving","normal")
+tmp[is.na(tmp$Holiday), 13] <- "normal"
+
+tmpordered <- tmp[order(tmp[,1],tmp[,2]),]
+cleanfeatures <- tmpordered[,c(colnames(features),"Holiday")]
+rownames(cleanfeatures) <- c(1:nrow(cleanfeatures))
+rm(tmp)
+rm(tmpordered)
+rm(x)
 
 
 # Process the features file
