@@ -102,6 +102,12 @@ rm(cleanfeatures)
 #  *** this merge takes too mauch memory for R session
 #tmp <- merge(features,train,by="Store",all=TRUE)
 
+train1 <- train[train$Store==1,]
+features1 <- features[features$Store==1,]
+
+model1 <- merge(features1,train1,by="Store",all=TRUE)
+
+
 
 # build model
 
