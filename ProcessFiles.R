@@ -8,7 +8,7 @@ setwd("~/Documents/kaggle/walmart")
 
 # import raw data
 features <- read.csv("./data/features.csv")
-orgfeatures <- read.csv("./data/features.csv")
+#orgfeatures <- read.csv("./data/features.csv")
 sampleSubmission <- read.csv("./data/sampleSubmission.csv")
 store <- read.csv("./data/stores.csv")
 train <- read.csv("./data/train.csv")
@@ -97,4 +97,13 @@ rm(tmpordered)
 
 features <- cleanfeatures
 rm(cleanfeatures)
+
+# merge features and training set
+#  *** this merge takes too mauch memory for R session
+#tmp <- merge(features,train,by="Store",all=TRUE)
+
+
+# build model
+
+
 
