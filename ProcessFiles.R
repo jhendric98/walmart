@@ -41,6 +41,35 @@ rm(i)
 rm(x)
 rm(y)
 
+# add holiday columns
+# Super Bowl: 12-Feb-10, 11-Feb-11, 10-Feb-12, 8-Feb-13
+x <- c("superbowl","2010-02-10")
+x <- rbind(x,c("superbowl","2011-02-11"))
+x <- rbind(x,c("superbowl","2012-02-10"))
+x <- rbind(x,c("superbowl","2013-02-08"))
+
+#  Labor Day: 10-Sep-10, 9-Sep-11, 7-Sep-12, 6-Sep-13
+x <- rbind(x,c("laborday","2010-09-10"))
+x <- rbind(x,c("laborday","2011-09-09"))
+x <- rbind(x,c("laborday","2012-09-07"))
+x <- rbind(x,c("laborday","2013-09-06"))
+
+#  Thanksgiving: 26-Nov-10, 25-Nov-11, 23-Nov-12, 29-Nov-13
+x <- rbind(x,c("thanksgiving","2010-11-26"))
+x <- rbind(x,c("thanksgiving","2011-11-25"))
+x <- rbind(x,c("thanksgiving","2012-11-23"))
+x <- rbind(x,c("thanksgiving","2013-11-29"))
+
+#  Christmas: 31-Dec-10, 30-Dec-11, 28-Dec-12, 27-Dec-13
+x <- rbind(x,c("christmas","2010-12-31"))
+x <- rbind(x,c("christmas","2011-12-30"))
+x <- rbind(x,c("christmas","2012-12-28"))
+x <- rbind(x,c("christmas","2013-12-27"))
+
+colnames(x) <- c("Holiday","Date")
+
+
+
 # Process the features file
 #   - missing data
 #   - add correct holiday weeks
