@@ -51,6 +51,10 @@ Make sure the following holidays are marked in the data:
 *  Thanksgiving: 26-Nov-10, 25-Nov-11, 23-Nov-12, 29-Nov-13
 *  Christmas: 31-Dec-10, 30-Dec-11, 28-Dec-12, 27-Dec-13
 
+### NOTE: the holidays between these listed, those in features files, and training datasets do not match! 
+
+
+
 
 
 
