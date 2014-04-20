@@ -36,7 +36,10 @@ for (i in x) {
   features[Store==i & is.na(Unemployment), "Unemployment"] <- y
 }
 
-
+# clean up vars
+rm(i)
+rm(x)
+rm(y)
 
 # Process the features file
 #   - missing data
