@@ -111,6 +111,8 @@ strs <- sort(unique(store[,"Store"]))
 
 #create complete feature files for each store.
 #TODO need to join the store and date fields to join on both*
+
+
 for (i in strs) {
   traini <- train[train$Store==i,]
   featuresi <- features[features$Store==i,]
