@@ -98,6 +98,10 @@ rm(tmpordered)
 features <- cleanfeatures
 rm(cleanfeatures)
 
+#save features set for later reference
+write.table(features, file="./data/models/features.csv",row.names=F,col.names=T,sep=",")
+
+
 # merge features and training set
 #  *** this merge takes too mauch memory for R session
 #tmp <- merge(features,train,by="Store",all=TRUE)
@@ -106,12 +110,13 @@ dept <- sort(unique(train[,"Dept"]))
 strs <- sort(unique(store[,"Store"]))
 
 #create complete feature files for each store.
+#TODO need to join the store and date fields to join on both*
 for (i in strs) {
   traini <- train[train$Store==i,]
   featuresi <- features[features$Store==i,]
   
   modeli <- merge(featuresi,traini,by="Store",all=TRUE)
-  write.table(modeli, file=paste("./data/model",i,".csv", sep=""),col.names=T)
+  write.table(modeli, file=paste("./data/models/model",i,".csv", sep=""), row.names=F, col.names=T, sep=",")
   rm(traini)
   rm(featuresi)
   rm(modeli)
@@ -120,7 +125,17 @@ for (i in strs) {
 rm(i)
 
 #load and split each store by dept sales and save to deptsales files.
-
+for (o in strs) {
+  modelo <- read.csv(file=paste("./data/models/model",o,".csv", sep=""), header=T, sep=",")
+  for (i in dept) {
+    #split model by dept
+    
+    #append dept to dept file
+    
+    #loop to next dept
+  }
+  
+}
 
 # build models for each dept.
 
