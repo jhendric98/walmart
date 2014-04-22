@@ -114,20 +114,23 @@ strs <- sort(unique(store[,"Store"]))
 train$index <- do.call(paste, c(train[c("Store","Date")], sep = "|"))
 features$index <- do.call(paste, c(features[c("Store","Date")], sep = "|"))
 
-#for (i in strs) {
-#  traini <- train[train$Store==i,]
-#  featuresi <- features[features$Store==i,]
-  
-#  modeli <- merge(featuresi,traini,by="index",all=TRUE)
-#  write.table(modeli, file=paste("./data/models/model",i,".csv", sep=""), row.names=F, col.names=T, sep=",")
-#  rm(traini)
-#  rm(featuresi)
-#  rm(modeli)
-#}
-
-# rm(i)
-
+# merge and cleanup final model
 model <- merge(train,features,by="index",all=TRUE)
+model <- model[!is.na(model$Dept),]
+write.table(model, file="model.csv", row.names=F, col.names=T, sep=",")
+
+
+for (i in dept) {
+  modeli <- model[model$Dept==i,]
+
+  write.table(modeli, file=paste("./data/models/model_dept",i,".csv", sep=""), row.names=F, col.names=T, sep=",")
+
+  rm(modeli)
+}
+
+rm(i)
+
+
 
 #load and split each store by dept sales and save to deptsales files.
 #for (o in strs) {
@@ -138,9 +141,9 @@ model <- merge(train,features,by="index",all=TRUE)
     #append dept to dept file
     
     #loop to next dept
-  }
+#  }
   
-}
+#}
 
 # build models for each dept.
 
