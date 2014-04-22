@@ -110,26 +110,29 @@ dept <- sort(unique(train[,"Dept"]))
 strs <- sort(unique(store[,"Store"]))
 
 #create complete feature files for each store.
-#TODO need to join the store and date fields to join on both*
 
+train$index <- do.call(paste, c(train[c("Store","Date")], sep = "|"))
+features$index <- do.call(paste, c(features[c("Store","Date")], sep = "|"))
 
-for (i in strs) {
-  traini <- train[train$Store==i,]
-  featuresi <- features[features$Store==i,]
+#for (i in strs) {
+#  traini <- train[train$Store==i,]
+#  featuresi <- features[features$Store==i,]
   
-  modeli <- merge(featuresi,traini,by="Store",all=TRUE)
-  write.table(modeli, file=paste("./data/models/model",i,".csv", sep=""), row.names=F, col.names=T, sep=",")
-  rm(traini)
-  rm(featuresi)
-  rm(modeli)
-}
+#  modeli <- merge(featuresi,traini,by="index",all=TRUE)
+#  write.table(modeli, file=paste("./data/models/model",i,".csv", sep=""), row.names=F, col.names=T, sep=",")
+#  rm(traini)
+#  rm(featuresi)
+#  rm(modeli)
+#}
 
-rm(i)
+# rm(i)
+
+model <- merge(train,features,by="index",all=TRUE)
 
 #load and split each store by dept sales and save to deptsales files.
-for (o in strs) {
-  modelo <- read.csv(file=paste("./data/models/model",o,".csv", sep=""), header=T, sep=",")
-  for (i in dept) {
+#for (o in strs) {
+#  modelo <- read.csv(file=paste("./data/models/model",o,".csv", sep=""), header=T, sep=",")
+#  for (i in dept) {
     #split model by dept
     
     #append dept to dept file
