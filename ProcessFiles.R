@@ -117,9 +117,22 @@ features$index <- do.call(paste, c(features[c("Store","Date")], sep = "|"))
 # merge and cleanup final model
 model <- merge(train,features,by="index",all=TRUE)
 model <- model[!is.na(model$Dept),]
+rownames(model) <- NULL
+
+model$index <- NULL
+model$Store.y <- NULL
+model$Date.y <- NULL
+colnames(model)[1] <- "Store"
+colnames(model)[3] <- "Date"
+colnames(model)[5] <- "IsHolidayDept"
+colnames(model)[15] <- "IsHolidayStore"
+
+
+# save model file for future use
 write.table(model, file="model.csv", row.names=F, col.names=T, sep=",")
 
 
+# break up file into spearate dept sales files.
 for (i in dept) {
   modeli <- model[model$Dept==i,]
 
