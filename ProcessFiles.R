@@ -68,7 +68,7 @@ x <- rbind(x,c("christmas","2012-12-28"))
 #x <- rbind(x,c("christmas","2013-12-27"))
 
 colnames(x) <- c("Holiday","Date")
-rownames(x) <- c(1:nrow(x))
+rownames(x) <- NULL
 x <- as.data.frame(x)
 
 #merge features and x to add holiday column
