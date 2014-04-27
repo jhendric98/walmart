@@ -19,7 +19,7 @@ setwd("~/Documents/kaggle/walmart")
 walmart.path <- "./data/"
 train.data.file <- "train.csv"
 test.data.file <- "test.csv"
-stores.data.file <- "store.csv"
+stores.data.file <- "stores.csv"
 features.data.file <- "features.csv"
 samplesubmission.data.file <- "sample.Submission.csv"
 
@@ -43,10 +43,38 @@ features.col.types <- c('factor',    # StoreID
 )
 
 
-# Read in the features file
+stores.col.types <- c('factor',    # StoreID
+                      'factor',    # Store Type 
+                      'numeric'   # Store size (I think in sqft)
+                      )
+
+train.col.types <- c('factor',    # StoreID
+                     'factor',    # DeptID
+                     'Date',      # SalesWeek
+                     'numeric',   # Weekly Sales Data
+                     'logical'    # IsHoliday
+                     )
+
+# Read in the features.csv file
 features.raw <- readData(walmart.path, features.data.file, 
                       features.col.types, missing.types)
 df.features <- features.raw
+
+# Read in the stores.csv file
+stores.raw <- readData(walmart.path, stores.data.file, 
+                         stores.col.types, missing.types)
+df.stores <- stores.raw
+
+# Read in the train.csv file
+train.raw <- readData(walmart.path, train.data.file, 
+                       train.col.types, missing.types)
+df.train <- train.raw
+
+## map missing data by provided feature
+#require(Amelia)
+#missmap(df.stores, main="Walmart Store Data - Missings Map", 
+#         col=c("yellow", "black"), legend=FALSE)
+
 
 
 # fix features data
@@ -68,12 +96,6 @@ df.features$MarkDown2 <- as.logical(df.features$MarkDown2)
 df.features$MarkDown3 <- as.logical(df.features$MarkDown3)
 df.features$MarkDown4 <- as.logical(df.features$MarkDown4)
 df.features$MarkDown5 <- as.logical(df.features$MarkDown5)
-
-# ## map missing data by provided feature
-# require(Amelia)
-# missmap(df.features, main="Walmart Feature Data - Missings Map", 
-#         col=c("yellow", "black"), legend=FALSE)
-
 
 #fix missing CPIs by replacing with the mean of the Store's CPI
 x <- unique(df.features[is.na(df.features$CPI), "Store"])
@@ -142,7 +164,46 @@ df.features <- tmp
 rm(tmp)
 rm(x)
 
+# merge store data to cleanfeatures
+df.features.clean <- merge(x=df.features, y=df.stores, by="Store", all=TRUE)
+df.features.clean <- df.features.clean[order(df.features.clean[,1],df.features.clean[,2]),]
+df.features.clean <- df.features.clean[,c(colnames(df.features),"Type","Size")]
+rownames(df.features.clean) <- NULL
 
+# creating a vector for departments and stores
+dept <- sort(unique(df.train[,"Dept"]))
+strs <- sort(unique(df.stores[,"Store"]))
+
+# create indexes to merge the train and features.clean data sets
+df.train$index <- do.call(paste, c(df.train[c("Store","Date")], sep = "|"))
+df.features.clean$index <- do.call(paste, c(df.features.clean[c("Store","Date")], sep = "|"))
+
+# merge and cleanup final model
+df.model <- merge(x=df.train,y=df.features.clean,by="index",all.x=TRUE)
+
+df.model$index <- NULL
+df.model$Store.y <- NULL
+df.model$Date.y <- NULL
+df.model$IsHoliday.x <- NULL
+
+colnames(df.model)[1] <- "Store"
+colnames(df.model)[3] <- "Date"
+colnames(df.model)[14] <- "IsHoliday"
+
+df.model <- df.model[order(df.model[,1],df.model[,2],df.model[,3]),]
+rownames(df.model) <- NULL
+
+# cleanup memory for modeling
+rm(list=c("df.features","df.features.clean","df.stores","df.train",
+          "features.raw","stores.raw","train.raw","features.col.types",
+          "features.data.file","missing.types","samplesubmission.data.file",
+          "stores.col.types","stores.data.file","test.data.file",
+          "walmart.path","train.col.types","train.data.file"))
+
+
+#save datasets set for later reference
+write.table(df.features.clean, file="./data/models/featuresclean.csv",row.names=F,col.names=T,sep=",")
+write.table(df.model, file="./data/models/model.csv",row.names=F,col.names=T,sep=",")
 
 
 

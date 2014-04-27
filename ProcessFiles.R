@@ -122,6 +122,7 @@ rownames(model) <- NULL
 model$index <- NULL
 model$Store.y <- NULL
 model$Date.y <- NULL
+model$IsHoliday.y <- NULL
 colnames(model)[1] <- "Store"
 colnames(model)[3] <- "Date"
 colnames(model)[5] <- "IsHolidayDept"
